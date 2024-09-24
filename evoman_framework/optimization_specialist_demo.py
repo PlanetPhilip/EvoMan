@@ -19,7 +19,7 @@ import glob, os
 
 
 # choose this for not using visuals and thus making experiments faster
-headless = True
+headless = False
 if headless:
     os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -40,7 +40,7 @@ env = Environment(experiment_name=experiment_name,
                   enemymode="static",
                   level=2,
                   speed="fastest",
-                  visuals=False)
+                  visuals=True)
 
 # default environment fitness is assumed for experiment
 
@@ -54,7 +54,7 @@ ini = time.time()  # sets time marker
 
 # genetic algorithm params
 
-run_mode = 'train' # train or test
+run_mode = 'test' # train or test
 
 # number of weights for multilayer with 10 hidden neurons
 n_vars = (env.get_num_sensors()+1)*n_hidden_neurons + (n_hidden_neurons+1)*5
@@ -62,9 +62,14 @@ n_vars = (env.get_num_sensors()+1)*n_hidden_neurons + (n_hidden_neurons+1)*5
 
 dom_u = 1
 dom_l = -1
-npop = 100
-gens = 30
-mutation = 0.2
+# npop = 100
+# gens = 30
+# mutation = 0.2
+# last_best = 0
+
+npop = 500
+gens = 10
+mutation = 0.3
 last_best = 0
 
 

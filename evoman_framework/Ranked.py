@@ -1,3 +1,6 @@
+# Rank selection
+
+
 ###############################################################################
 # EvoMan FrameWork - V1.0 2016  			                                  #
 # DEMO : Neuroevolution - Genetic Algorithm  neural network.                  #
@@ -17,11 +20,11 @@ import numpy as np
 import glob, os
 
 # choose this for not using visuals and thus making experiments faster
-headless = False
+headless = True
 if headless:
     os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-experiment_name = 'Elitism2_test'
+experiment_name = 'Ranked_test'
 if not os.path.exists(experiment_name):
     os.makedirs(experiment_name)
 
@@ -34,7 +37,7 @@ mutation = 0.3
 last_best = 0
 elite_size = 0.05  # Retain the top 5% individuals as elites
 
-run_mode = 'test'  # train or test
+run_mode = 'train'  # train or test
 
 # initializes simulation in individual evolution mode, for single static enemy.
 env = Environment(experiment_name=experiment_name,
@@ -44,7 +47,7 @@ env = Environment(experiment_name=experiment_name,
                   enemymode="static",
                   level=2,
                   speed="fastest",
-                  visuals=True)
+                  visuals=False)
 
 # default environment fitness is assumed for experiment
 
@@ -153,20 +156,13 @@ def doomsday(pop, fit_pop):
     return pop, fit_pop
 
 
-def elitist_selection(fit_pop, pop, elite_size):
-    num_elites = int(elite_size * npop)
-    sorted_indices = np.argsort(fit_pop)[::-1]
-    elites = pop[sorted_indices[:num_elites]]  # Select top individuals
+def rank_selection(pop, fit_pop):
+    sorted_indices = np.argsort(fit_pop)[::-1]  # Sort fitness values in descending order
+    ranks = np.arange(1, len(fit_pop) + 1)  # Create ranks from 1 to number of individuals
+    probs = ranks / np.sum(ranks)  # Normalize ranks to get selection probabilities
 
-    fit_pop_cp = fit_pop
-    fit_pop_norm = np.array(list(map(lambda y: norm(y, fit_pop_cp), fit_pop)))  # Normalize fitness values
-    probs = fit_pop_norm / np.sum(fit_pop_norm)  # Compute selection probabilities
-    chosen = np.random.choice(pop.shape[0], npop - num_elites, p=probs, replace=False)  # Select the rest
-
-    new_population = np.vstack((elites, pop[chosen]))
-    new_fit_pop = np.append(fit_pop[sorted_indices[:num_elites]], fit_pop[chosen])
-
-    return new_population, new_fit_pop
+    chosen_indices = np.random.choice(sorted_indices, size=npop, replace=True, p=probs)  # Select individuals based on ranks
+    return pop[chosen_indices], fit_pop[chosen_indices]
 
 
 # loads file with the best solution for testing
@@ -231,8 +227,8 @@ for i in range(ini_g + 1, gens):
     pop = np.vstack((pop, offspring))
     fit_pop = np.append(fit_pop, fit_offspring)
 
-    # Apply elitist selection
-    pop, fit_pop = elitist_selection(fit_pop, pop, elite_size=0.05)
+    # Apply ranked selection
+    pop, fit_pop = rank_selection(pop, fit_pop)
 
     best = np.argmax(fit_pop)  # best solution in generation
     fit_pop[best] = float(evaluate(np.array([pop[best]]))[0])  # repeats best eval, for stability issues

@@ -5,7 +5,7 @@ from demo_controller import player_controller
 # imports other libs
 import time
 import numpy as np
-from math import fabs,sqrt
+from math import fabs, sqrt
 import glob, os
 
 n_hidden_neurons = 10
@@ -213,5 +213,6 @@ print('\nExecution time: ' + str(round((fim - ini))) + ' seconds \n')
 
 file = open(experiment_name+'/neuroended', 'w')  # Save control (simulation has ended) file for bash loop file
 file.close()
+
 
 env.state_to_log()

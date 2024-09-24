@@ -5,7 +5,6 @@ from demo_controller import player_controller
 # imports other libs
 import time
 import numpy as np
-from math import fabs, sqrt
 import glob, os
 
 n_hidden_neurons = 10
@@ -17,7 +16,7 @@ mutation = 0.3
 last_best = 0
 elite_size = 0.05  # Retain the top 5% individuals as elites
 
-run_mode = ('test')
+run_mode = ('train')
 
 experiment_name = 'Elitism_test'
 if not os.path.exists(experiment_name):
@@ -161,6 +160,7 @@ last_sol = fit_pop[best]
 notimproved = 0
 
 for i in range(ini_g + 1, gens):
+
     offspring = crossover(pop)  # Crossover
     fit_offspring = evaluate(offspring)  # Evaluate the offspring
     pop = np.vstack((pop, offspring))

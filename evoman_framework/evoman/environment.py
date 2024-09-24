@@ -396,7 +396,7 @@ class Environment(object):
             # default fitness function for single solutions
     def fitness_single(self):
         original = 0.9*(100 - self.get_enemylife()) + 0.1*self.get_playerlife() - numpy.log(self.get_time())
-        speed = self.get_playerlife() / numpy.log(self.get_time()) * 100
+        speed = self.get_playerlife() / numpy.log(self.get_time() + 1e-5)
         return speed
 
     # default fitness function for consolidating solutions among multiple games

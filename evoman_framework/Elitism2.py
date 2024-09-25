@@ -24,7 +24,6 @@ for i in range(1, 11):
     experiment_name = f"Elitism_test{i}_E8"
     if not os.path.exists(experiment_name):
         os.makedirs(experiment_name)
-
     n_hidden_neurons = 10
     dom_u = 1
     dom_l = -1

@@ -395,9 +395,15 @@ class Environment(object):
 
             # default fitness function for single solutions
     def fitness_single(self):
-        original = 0.9*(100 - self.get_enemylife()) + 0.1*self.get_playerlife() - numpy.log(self.get_time())
-        speed = self.get_playerlife() / numpy.log(self.get_time() + 1e-5)
-        return speed
+        #original = 0.9*(100 - self.get_enemylife()) + 0.1*self.get_playerlife() - numpy.log(self.get_time())
+        #speed = self.get_playerlife() / (self.get_time() + 1e-5)
+        #speed = 1/ (self.get_time() + 1e-5)
+        if self.get_playerlife() > 0:
+            speed = 1/(self.get_time() + 1e-5)
+        else:
+            speed = -1/(self.get_time() + 1e-5)
+
+        return speed*100
 
     # default fitness function for consolidating solutions among multiple games
     def cons_multi(self,values):
@@ -465,7 +471,7 @@ class Environment(object):
             if self.playermode == "human" or self.sound == "on":
                 # sound effects
                 if self.sound == "on" and self.time == 1:
-                    sound = pygame.mixer.Sound('evoman/sounds/open.wav')
+                    sound = pygame.mixer.Sound('sounds/open.wav')
                     c = pygame.mixer.Channel(1)
                     c.set_volume(1)
                     c.play(sound,loops=10)
